@@ -1,0 +1,34 @@
+[[local|localrc]]
+
+Q_ENABLE_DRAGONFLOW_LOCAL_CONTROLLER=True
+
+DATABASE_PASSWORD=secrete
+RABBIT_PASSWORD=secrete
+SERVICE_PASSWORD=secrete
+SERVICE_TOKEN=secrete
+ADMIN_PASSWORD=secrete
+
+enable_plugin dragonflow git://10.100.100.37:9418/dragonflow sg_app
+enable_service df-etcd
+enable_service df-etcd-server
+enable_service df-controller
+enable_service df-ext-services
+enable_service df-zmq-publisher-service
+
+disable_service n-net
+enable_service q-svc
+enable_service q-l3
+disable_service heat
+disable_service tempest
+
+# Enable q-meta once nova is being used.
+#enable_service q-meta
+
+# We have to disable the neutron L2 agent. DF does not use the L2 agent.
+disable_service q-agt
+
+# We have to disable the neutron dhcp agent. DF does not use the dhcp agent.
+disable_service q-dhcp
+
+DF_L2_RESPONDER="True"
+
