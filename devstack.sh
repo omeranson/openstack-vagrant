@@ -1,13 +1,17 @@
 # Some defaults:
-VAGRANT_BOX="fedora/23-cloud-base"
-VAGRANT_LIBVIRT_SERVER="xavier"
-LOCAL_CONF="local.conf"
-VAGRANT_MEMORY=8192
-VAGRANT_CPUS=1
-INSTALL_SCRIPT="install.sh"
-BASE=~/vagrant/instances
-LVM_VOLUME_GROUP=openstack_vg
-LVM_DISK_SIZE=40G
+if [ -r $HOME/.openstack-vagrant.conf ]; then
+    source $HOME/.openstack-vagrant.conf
+fi
+
+VAGRANT_BOX=${VAGRANT_BOX:-"fedora/23-cloud-base"}
+VAGRANT_LIBVIRT_SERVER=${VAGRANT_LIBVIRT_SERVER:-"localhost"}
+LOCAL_CONF=${LOCAL_CONF:-"local.conf"}
+VAGRANT_MEMORY=${VAGRANT_MEMORY:-4096}
+VAGRANT_CPUS=${VAGRANT_CPUS:-1}
+INSTALL_SCRIPT=${INSTALL_SCRIPT:-"install.sh"}
+BASE=${BASE:-~/vagrant/instances}
+LVM_VOLUME_GROUP=${LVM_VOLUME_GROUP:-openstack_vg}
+LVM_DISK_SIZE=${LVM_DISK_SIZE:-40G}
 
 function help {
     echo "USAGE: $0 [options]
