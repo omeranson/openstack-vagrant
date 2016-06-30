@@ -3,11 +3,16 @@ if [ -r $HOME/.openstack-vagrant.conf ]; then
     source $HOME/.openstack-vagrant.conf
 fi
 
-VAGRANT_BOX=${VAGRANT_BOX:-"fedora/23-cloud-base"}
-VAGRANT_LIBVIRT_SERVER=${VAGRANT_LIBVIRT_SERVER:-"localhost"}
+VAGRANT_BOX_DEFAULT="fedora/23-cloud-base"
+LIBVIRT_SERVER_DEFAULT="localhost"
+VAGRANT_MEMORY_DEFAULT=8192
+VAGRANT_CPUS_DEFAULT=1
+
+VAGRANT_BOX=${VAGRANT_BOX:-$VAGRANT_BOX_DEFAULT}
+LIBVIRT_SERVER=${LIBVIRT_SERVER:-$LIBVIRT_SERVER_DEFAULT}
 LOCAL_CONF=${LOCAL_CONF:-"local.conf"}
-VAGRANT_MEMORY=${VAGRANT_MEMORY:-4096}
-VAGRANT_CPUS=${VAGRANT_CPUS:-1}
+VAGRANT_MEMORY=${VAGRANT_MEMORY:-$VAGRANT_MEMORY_DEFAULT}
+VAGRANT_CPUS=${VAGRANT_CPUS:-$VAGRANT_CPUS_DEFAULT}
 INSTALL_SCRIPT=${INSTALL_SCRIPT:-"install.sh"}
 BASE=${BASE:-~/vagrant/instances}
 LVM_VOLUME_GROUP=${LVM_VOLUME_GROUP:-openstack_vg}
@@ -16,14 +21,14 @@ LVM_DISK_SIZE=${LVM_DISK_SIZE:-40G}
 function help {
     echo "USAGE: $0 [options]
 Where [option]s may be:
-    -b <box type>       The base box to use for the node (default: fedora/23-cloud-base)
+    -b <box type>       The base box to use for the node (default: $VAGRANT_BOX_DEFAULT)
     -d <disk size>      The maximum allocated disk size (default: 40G)
     -g <lvm group>      Allocate storage from this LVM volume group (default: openstack_cg)
     -i <install-script> The install script to use (default: install.sh)
     -l <local.conf>     The name of the local.conf file on which to run stack.sh
-    -m <memory>         The amount of allocated memory, in MB (default 8192)
-    -s <servername>     The name of the virtual machine server (Default: xavier)
-    -v <vcpus>          The number of virtual CPUS allocated (default: 1)
+    -m <memory>         The amount of allocated memory, in MB (default $VAGRANT_MEMORY_DEFAULT)
+    -s <servername>     The name of the virtual machine server (default: $LIBVIRT_SERVER_DEFAULT)
+    -v <vcpus>          The number of virtual CPUS allocated (default: $VAGRANT_CPUS_DEFAULT)
     -h                  This help message"
 }
 
@@ -35,7 +40,7 @@ while getopts "b:d:g:i:l:m:s:v:h" OPTION ; do
         i ) INSTALL_SCRIPT=$OPTARG ;;
         l ) LOCAL_CONF=$OPTARG ;;
         m ) VAGRANT_MEMORY=$OPTARG ;;
-        s ) VAGRANT_LIBVIRT_SERVER=$OPTARG ;;
+        s ) LIBVIRT_SERVER=$OPTARG ;;
         v ) VAGRANT_CPUS=$OPTARG ;;
         h ) help ; exit 0 ;;
     esac
@@ -150,7 +155,7 @@ Vagrant.configure(2) do |config|
   #   vb.memory = "1024"
   # end
   config.vm.provider :libvirt do |libvirt|
-    libvirt.host = "$VAGRANT_LIBVIRT_SERVER"
+    libvirt.host = "$LIBVIRT_SERVER"
     libvirt.connect_via_ssh = true
     libvirt.username = "root"
     libvirt.memory = $VAGRANT_MEMORY
@@ -182,7 +187,7 @@ Vagrant.configure(2) do |config|
 end
 EOF
 
-cp $LOCAL_CONF $VAGRANT_FOLDER/local.conf
+cp "$LOCAL_CONF" "$VAGRANT_FOLDER/local.conf"
 
 pushd $VAGRANT_FOLDER
 vagrant up
