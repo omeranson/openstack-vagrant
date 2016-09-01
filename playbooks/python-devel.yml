@@ -1,0 +1,22 @@
+---
+- hosts: default
+  tasks:
+    # - name: Install python-pip (Debian)
+    #   apt: name=python-pip state=present
+    #   when: ansible_os_family == "Debian"
+    #   register: pip_installed
+    #   become: yes
+    #   become_user: root
+  - name: Install python-pip (RedHat)
+    dnf: name=python-pip state=present
+    register: pip_installed
+    become: yes
+    become_user: root
+  - name: Upgrade pip
+    pip: name=pip state=latest
+    become: yes
+    become_user: root
+  - name: Upgrade tox
+    pip: name=tox state=latest
+    become: yes
+    become_user: root

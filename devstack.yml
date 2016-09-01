@@ -1,0 +1,11 @@
+- hosts: default
+  gather_facts: no
+- include: playbooks/ansible-setup.yml
+- include: playbooks/development.yml
+- include: playbooks/acl.yml
+- include: playbooks/git.yml
+- include: playbooks/python-devel.yml
+- include: playbooks/tmux.yml
+- include: playbooks/stack-user.yml
+- include: playbooks/reboot.yml
+- include: playbooks/devstack.yml

@@ -1,0 +1,25 @@
+---
+- hosts: default
+  tasks:
+  - name: Clone devstack
+    git: dest=/home/stack/devstack repo=https://github.com/openstack-dev/devstack
+    become: yes
+    become_user: stack
+    tags:
+    - devstack-only
+  - name: Install local.conf
+    shell: cp /vagrant/local.conf devstack/local.conf chdir=/home/stack creates=/home/stack/devstack/local.conf
+    become: yes
+    become_user: stack
+    tags:
+    - devstack-only
+  - name: Run devstack
+    shell: |
+      tmux start-server
+      tmux new-session -d -s stack -n stack
+      tmux send-keys -t stack:stack "cd devstack" C-m
+      tmux send-keys -t stack:stack "./stack.sh" C-m
+    become: yes
+    become_user: stack
+    tags:
+    - devstack-only

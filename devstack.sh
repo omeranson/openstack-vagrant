@@ -69,7 +69,7 @@ RAND=`mktemp -u XXXXXX`
 LVM_USE_VOLUME=""
 #LVM_CREATE_VOLUME_TRIGGER=""
 #LVM_DESTROY_VOLUME_TRIGGER=""
-#if [ "$VAGRANT_LIBVIRT_SERVER" != "localhost" ]; then
+#if [ "$LIBVIRT_SERVER" != "localhost" ]; then
 #    LVM_USE_VOLUME="libvirt.storage_pool_name = \"$LVM_VOLUME_GROUP\""
 #    VOLUME_NAME="stack-$RAND"
 #    VOLUME_PATH="/dev/$LVM_VOLUME_GROUP/$VOLUME_NAME"
@@ -84,12 +84,12 @@ LVM_USE_VOLUME=""
     
 #    LVM_CREATE_VOLUME_TRIGGER="
 #  config.trigger.before :up do
-#    run \"ssh root@$VAGRANT_LIBVIRT_SERVER lvcreate -T -L $LVM_DISK_SIZE -n $VOLUME_NAME $LVM_VOLUME_GROUP && ln -s $VOLUME_PATH /var/lib/libvirt/images/$VOLUME_NAME\"
+#    run \"ssh root@$LIBVIRT_SERVER lvcreate -T -L $LVM_DISK_SIZE -n $VOLUME_NAME $LVM_VOLUME_GROUP && ln -s $VOLUME_PATH /var/lib/libvirt/images/$VOLUME_NAME\"
 #  end
 #"
 #    LVM_DESTROY_VOLUME_TRIGGER="
 #  config.trigger.after :destroy do
-#    run \"ssh root@$VAGRANT_LIBVIRT_SERVER lvremove -f $VOLUME_PATH\"
+#    run \"ssh root@$LIBVIRT_SERVER lvremove -f $VOLUME_PATH\"
 #  end
 #"
 #fi
@@ -101,6 +101,13 @@ mkdir -p $VAGRANT_FOLDER
 cat >> $VAGRANT_FOLDER/Vagrantfile << EOF
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+
+def escape(s)
+    "\\"" + s.gsub("\\\\", "\\\\\\\\").gsub("\\"", "\\\\\\"") + "\\""
+end
+
+hostname = "$LIBVIRT_SERVER"
+username = "root"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -155,9 +162,9 @@ Vagrant.configure(2) do |config|
   #   vb.memory = "1024"
   # end
   config.vm.provider :libvirt do |libvirt|
-    libvirt.host = "$LIBVIRT_SERVER"
+    libvirt.host = hostname
     libvirt.connect_via_ssh = true
-    libvirt.username = "root"
+    libvirt.username = username
     libvirt.memory = $VAGRANT_MEMORY
     libvirt.cpus = $VAGRANT_CPUS
     $LVM_USE_VOLUME
@@ -178,11 +185,18 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
  
-  config.vm.provision "shell", inline: "/vagrant_common/guest_scripts/$INSTALL_SCRIPT"
+  #config.vm.provision "shell", inline: "/vagrant_common/guest_scripts/$INSTALL_SCRIPT"
 
-  config.vm.provision "shell" do |s|
-    s.inline = "sudo -u stack /vagrant_common/guest_scripts/devstack.sh"
-    s.args = "/vagrant/local.conf"
+  #config.vm.provision "shell" do |s|
+  #  s.inline = "sudo -u stack /vagrant_common/guest_scripts/devstack.sh"
+  #  s.args = "/vagrant/local.conf"
+  #end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "$PWD/devstack.yml"
+    ansible.raw_arguments = "-vvv"
+    #ansible.raw_ssh_args = "-o ProxyCommand=\"ssh '#{hostname}' -l '#{username}' -i '/home/oanson/.ssh/id_rsa' nc %h %p\""
+    #ansible.host_vars = {"proxy_command": "ssh '#{hostname}' -l '#{username}' -i '/home/oanson/.ssh/id_rsa' nc %h %p"}
+    ansible.host_vars = {"default" => {"ansible_ssh_common_args": escape("-o ProxyCommand=\"ssh '#{hostname}' -l '#{username}' -i '/home/oanson/.ssh/id_rsa' nc %h %p\"")}}
   end
 end
 EOF

@@ -1,0 +1,8 @@
+---
+- hosts: default
+  tasks:
+  - name: Install acl
+    package: name=acl state=present
+    register: acl_installed
+    become: yes
+    become_user: root

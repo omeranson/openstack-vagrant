@@ -1,0 +1,18 @@
+---
+- hosts: default
+  gather_facts: no
+  tasks:
+  - name: Install dependencies
+    raw: dnf install -y python python-dnf
+    become: yes
+    become_user: root
+  - name: setup
+    setup:
+  - name: Install python-selinux
+    dnf: name=libselinux-python
+    become: yes
+    become_user: root
+  - name: Setup vagrant permissions
+    lineinfile: dest=/etc/sudoers.d/vagrant line="vagrant ALL=(ALL) NOPASSWD:ALL" state=present create=yes
+    become: yes
+    become_user: root

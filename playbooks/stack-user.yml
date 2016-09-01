@@ -1,0 +1,33 @@
+---
+- hosts: default
+  tasks:
+  - name: Add Stack user
+    user: name=stack append=yes groups=wheel
+    become: yes
+    become_user: root
+  - name: Add Stack to Sudoers
+    lineinfile: dest=/etc/sudoers.d/stack line="stack ALL=(ALL) NOPASSWD:ALL" state=present create=yes
+    become: yes
+    become_user: root
+  - name: Install public key for Stack
+    authorized_key:
+      user: stack
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    become: yes
+    become_user: stack
+  - name: Install .bashrc
+    copy: src="~/.bashrc" dest=/home/stack/.bashrc
+    become: yes
+    become_user: stack
+  - name: Install .gitconfig
+    copy: src="~/.gitconfig" dest=/home/stack/.gitconfig
+    become: yes
+    become_user: stack
+  - name: Install .tmux.conf
+    copy: src="~/.tmux.conf" dest=/home/stack/.tmux.conf
+    become: yes
+    become_user: stack
+  - name: Install .vimrc
+    copy: src="~/.vimrc" dest=/home/stack/.vimrc
+    become: yes
+    become_user: stack
