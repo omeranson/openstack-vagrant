@@ -9,9 +9,9 @@ RABBIT_PASSWORD=secrete
 SERVICE_PASSWORD=secrete
 SERVICE_TOKEN=secrete
 ADMIN_PASSWORD=secrete
+TUNNEL_TYPE=vxlan
 
-enable_plugin dragonflow git://192.168.121.1:9418/dragonflow testing
-#enable_plugin dragonflow git://10.100.100.37:9418/dragonflow sg_app
+enable_plugin dragonflow https://github.com/openstack/dragonflow
 enable_service df-etcd
 enable_service df-etcd-server
 enable_service df-controller
@@ -20,14 +20,13 @@ enable_service df-zmq-publisher-service
 
 disable_service n-net
 enable_service q-svc
-disable_service q-l3
 enable_service df-l3-agent
-Q_L3_ENABLED=True
 disable_service heat
 disable_service tempest
 
 # Enable q-meta once nova is being used.
 #enable_service q-meta
+enable_service df-metadata
 
 # We have to disable the neutron L2 agent. DF does not use the L2 agent.
 disable_service q-agt
@@ -36,8 +35,5 @@ disable_service q-agt
 disable_service q-dhcp
 
 DF_L2_RESPONDER="True"
-
-[[post-config|$NEUTRON_CONF]]
-[DEFAULT]
-router_distributed=True
-
+OVS_INSTALL_FROM_GIT=False
+OVS_BRANCH=master

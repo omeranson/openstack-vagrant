@@ -1,28 +1,27 @@
-#                                                                                                                                                                                                                                            
-# Sample DevStack local.conf.                                                                                                                                                                                                                
-#                                                                                                                                                                                                                                            
-# This sample file is intended to be used when adding an additional compute node                                                                                                                                                             
-# to your test environment.  It runs a very minimal set of services.                                                                                                                                                                         
-#                                                                                                                                                                                                                                            
-# For this configuration to work, you *must* set the SERVICE_HOST option to the                                                                                                                                                              
-# IP address of the main DevStack host.                                                                                                                                                                                                      
-#                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                             
-[[local|localrc]]                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                             
-HOST_IP=
-SERVICE_HOST=
-                                                                                                                                                                                                                                             
-DATABASE_PASSWORD=secrete                                                                                                                                                                                                                    
-RABBIT_PASSWORD=secrete                                                                                                                                                                                                                      
-SERVICE_PASSWORD=secrete                                                                                                                                                                                                                     
-SERVICE_TOKEN=secrete                                                                                                                                                                                                                        
-ADMIN_PASSWORD=secrete                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                             
-Q_ENABLE_DRAGONFLOW_LOCAL_CONTROLLER=True                                                                                                                                                                                                    
+#
+# Sample DevStack local.conf.
+#
+# This sample file is intended to be used when adding an additional compute node
+# to your test environment.  It runs a very minimal set of services.
+#
+# For this configuration to work, you *must* set the SERVICE_HOST option to the
+# IP address of the main DevStack host.
+#
+
+[[local|localrc]]
+
+SERVICE_HOST=192.168.121.161
+
+DATABASE_PASSWORD=secrete
+RABBIT_PASSWORD=secrete
+SERVICE_PASSWORD=secrete
+SERVICE_TOKEN=secrete
+ADMIN_PASSWORD=secrete
+
+Q_ENABLE_DRAGONFLOW_LOCAL_CONTROLLER=True
 TUNNEL_TYPE=vxlan
 
-enable_plugin dragonflow git://10.100.100.37:9418/dragonflow bug/1555001
+enable_plugin dragonflow https://github.com/openstack/dragonflow
 
 disable_all_services
 enable_service n-cpu
@@ -31,8 +30,17 @@ enable_service df-etcd
 enable_service df-ext-services
 enable_service df-zmq-publisher-service
 disable_service df-publisher-service
+enable_service df-metadata
+enable_service df-l3-agent
+disable_service q-agt
+disable_service q-dhcp
 
 enable_service n-novnc
+
+DF_L2_RESPONDER="True"
+
+OVS_INSTALL_FROM_GIT=True
+OVS_BRANCH=master
 
 # Set this to the address of the main DevStack host running the rest of the
 # OpenStack services. (Controller node)
@@ -41,10 +49,7 @@ RABBIT_HOST=$SERVICE_HOST
 Q_HOST=$SERVICE_HOST
 REMOTE_DB_IP=$SERVICE_HOST
 
-# Make VNC work on compute node
-NOVA_VNC_ENABLED=True
-NOVNCPROXY_URL=http://$SERVICE_HOST:6080/vnc_auto.html
-VNCSERVER_LISTEN=$HOST_IP
-VNCSERVER_PROXYCLIENT_ADDRESS=$VNCSERVER_LISTEN
-
+USE_ML2_PLUGIN=True
+Q_ML2_PLUGIN_MECHANISM_DRIVERS=df
+ML2_L3_PLUGIN=df-l3
 

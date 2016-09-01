@@ -8,7 +8,7 @@ SERVICE_PASSWORD=secrete
 SERVICE_TOKEN=secrete
 ADMIN_PASSWORD=secrete
 
-enable_plugin dragonflow git://10.100.100.37:9418/dragonflow sg_app
+enable_plugin dragonflow https://github.com/openstack/dragonflow
 enable_service df-etcd
 enable_service df-etcd-server
 enable_service df-controller
@@ -22,7 +22,7 @@ disable_service heat
 disable_service tempest
 
 # Enable q-meta once nova is being used.
-#enable_service q-meta
+#enable_service df-metadata
 
 # We have to disable the neutron L2 agent. DF does not use the L2 agent.
 disable_service q-agt
@@ -31,4 +31,4 @@ disable_service q-agt
 disable_service q-dhcp
 
 DF_L2_RESPONDER="True"
-
+# DF_APPS_LIST=l2_app.L2App,l3_proactive_app.L3ProactiveApp,dhcp_app.DHCPApp,dnat_app.DNATApp
