@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: all
   tasks:
   - name: Install git (Debian)
     apt: name=git state=present

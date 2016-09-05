@@ -1,4 +1,4 @@
-- hosts: default
+- hosts: all
   gather_facts: no
 - include: playbooks/ansible-setup.yml
 - include: playbooks/development.yml

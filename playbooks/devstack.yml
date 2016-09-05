@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: all
   tasks:
   - name: Clone devstack
     git: dest=/home/stack/devstack repo=https://github.com/openstack-dev/devstack
@@ -8,7 +8,7 @@
     tags:
     - devstack-only
   - name: Install local.conf
-    shell: cp /vagrant/local.conf devstack/local.conf chdir=/home/stack creates=/home/stack/devstack/local.conf
+    copy: src={{local_conf_file}} dest=/home/stack/devstack/local.conf
     become: yes
     become_user: stack
     tags:

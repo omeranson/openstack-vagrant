@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: all
   tasks:
   - name: Install acl
     package: name=acl state=present

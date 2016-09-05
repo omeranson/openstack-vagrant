@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: all
   tasks:
   - name: Update system packages
     dnf: name=* state=latest
