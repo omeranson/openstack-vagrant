@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: all
   tasks:
   - name: Install tmux (Debian)
     apt: name=tmux state=present

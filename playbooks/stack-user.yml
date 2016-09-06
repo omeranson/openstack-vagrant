@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: all
   tasks:
   - name: Add Stack user
     user: name=stack append=yes groups=wheel

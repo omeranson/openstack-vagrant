@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: all
   tasks:
     # - name: Install python-pip (Debian)
     #   apt: name=python-pip state=present
