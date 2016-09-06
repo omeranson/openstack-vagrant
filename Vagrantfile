@@ -34,7 +34,7 @@ Vagrant.configure(2) do |config|
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "devstack.yml"
         ansible.raw_arguments = "-vvv"
-        ansible.host_vars = {machine['name'] => {"ansible_ssh_common_args": escape("-o ProxyCommand=\"ssh '#{machine['name']}' -l '#{machine['hypervisor']['username']}' -i '/#{ENV['HOME']}/.ssh/id_rsa' nc %h %p\"")}}
+        ansible.host_vars = {machine['name'] => {"ansible_ssh_common_args": escape("-o ProxyCommand=\"ssh '#{machine['hypervisor']['name']}' -l '#{machine['hypervisor']['username']}' -i '/#{ENV['HOME']}/.ssh/id_rsa' nc %h %p\"")}}
         ansible.extra_vars = {
           local_conf_file: machine['local_conf_file']
         }
