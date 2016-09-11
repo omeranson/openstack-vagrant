@@ -1,3 +1,4 @@
 instances/*
 *.swp
 id_rsa.pub
+.vagrant/*
