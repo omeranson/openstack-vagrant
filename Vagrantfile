@@ -30,6 +30,7 @@ Vagrant.configure(2) do |config|
         libvirt.username = machine['hypervisor']['username']
         libvirt.memory = machine['memory']
         libvirt.cpus = machine['vcpus']
+        libvirt.cpu_mode = 'host-passthrough'
       end
       config.vm.provision "ansible" do |ansible|
         ansible.playbook = "devstack.yml"
