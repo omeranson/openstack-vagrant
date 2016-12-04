@@ -30,6 +30,7 @@
     with_subelements:
     - "{{ projects | d([], True) }}"
     - reviews
+    - skip_missing: True
   - name: Install local.conf
     copy: src={{ local_conf_file }} dest=/home/stack/devstack/local.conf
     become: yes
