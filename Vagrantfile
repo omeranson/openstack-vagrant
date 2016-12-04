@@ -36,7 +36,8 @@ Vagrant.configure(2) do |config|
         ansible.raw_arguments = "-vvv"
         ansible.host_vars = {machine['name'] => {"ansible_ssh_common_args": escape("-o ProxyCommand=\"ssh '#{machine['hypervisor']['name']}' -l '#{machine['hypervisor']['username']}' -i '/#{ENV['HOME']}/.ssh/id_rsa' nc %h %p\"")}}
         ansible.extra_vars = {
-          local_conf_file: machine['local_conf_file']
+          local_conf_file: machine['local_conf_file'],
+          projects: machine['projects']
         }
       end
     end

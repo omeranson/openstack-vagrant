@@ -5,5 +5,9 @@ machines:
       username: root
     memory: 8192
     vcpus: 1
-    box: "fedora/23-cloud-base"
+    box: "fedora/24-cloud-base"
     local_conf_file: ../common/local.confs/local.conf.standalone.zmq.df_l3_agent.ml2
+    projects:
+    - name: dragonflow
+      reviews:
+      - 405576
