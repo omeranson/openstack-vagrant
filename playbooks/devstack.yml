@@ -7,8 +7,32 @@
     become_user: stack
     tags:
     - devstack-only
+  - name: Create stack base folder
+    file: path=/opt/stack state=directory owner=stack group=stack
+    become: yes
+    become_user: root
+    tags:
+    - devstack-only
+  - name: Clone projects
+    git: dest="/opt/stack/{{ item.name }}" repo="{{ item.repo | d("git://github.com/openstack/" + item.name, True) }}"
+    become: yes
+    become_user: stack
+    with_items: "{{ projects | d([], True) }}"
+  - name: Fetch reviews
+    shell: |
+      cd /opt/stack/{{ item.0.name }}
+      git remote add gerrit {{ item.0.gerrit | d('https://review.openstack.org/openstack/' + item.0.name + '.git') }}
+      GERRIT_REF=`git ls-remote gerrit | grep '\/{{ item.1 }}\/' | awk '{print $2}' | sort -n -k 5 -t '/' | tail -1`
+      git fetch gerrit $GERRIT_REF
+      git merge FETCH_HEAD
+    become: yes
+    become_user: stack
+    with_subelements:
+    - "{{ projects | d([], True) }}"
+    - reviews
+    - skip_missing: True
   - name: Install local.conf
-    copy: src={{local_conf_file}} dest=/home/stack/devstack/local.conf
+    copy: src={{ local_conf_file }} dest=/home/stack/devstack/local.conf
     become: yes
     become_user: stack
     tags:
