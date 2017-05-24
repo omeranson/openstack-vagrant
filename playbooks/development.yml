@@ -40,3 +40,7 @@
     dnf: name=vim
     become: yes
     become_user: root
+  - name: Install gpg
+    dnf: name=gpg
+    become: yes
+    become_user: root
