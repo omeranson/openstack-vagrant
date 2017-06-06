@@ -23,8 +23,17 @@
     copy: src="~/.gitconfig" dest=/home/stack/.gitconfig
     become: yes
     become_user: stack
-  - name: Install .tmux.conf
+  - name: Test if custom .tmux.conf exist
+    stat: path="~/.tmux.conf"
+    register: tmux_conf_stat
+  - name: Install .tmux.conf (user)
     copy: src="~/.tmux.conf" dest=/home/stack/.tmux.conf
+    when: tmux_conf_stat.stat.exists == True
+    become: yes
+    become_user: stack
+  - name: Install .tmux.conf (default)
+    copy: src="../common/confs/.tmux.conf" dest=/home/stack/.tmux.conf
+    when: tmux_conf_stat.stat.exists == False
     become: yes
     become_user: stack
   - name: Install .vimrc
