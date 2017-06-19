@@ -11,3 +11,11 @@ machines:
     - name: dragonflow
       reviews:
       - 405576
+  - name: xenial
+    hypervisor:
+      name: mystique
+      username: root
+    memory: 8192
+    vcpus: 1
+    box: "yk0/ubuntu-xenial"
+    local_conf_file: ../common/local.confs/local.conf.standalone.zmq.df_l3_agent.ml2
