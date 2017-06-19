@@ -2,16 +2,29 @@
 - hosts: all
   gather_facts: no
   tasks:
-  - name: Install dependencies
-    raw: dnf install -y python python-dnf
-    become: yes
-    become_user: root
+  - name: Install python
+    package:
+      name: python
+      state: latest
+  - name: Install python-dnf
+    dnf:
+      name: $item
+      state: latest
+    with_items:
+      - python-dnf
+    when: ansible_distribution == 'Fedora'
+  - name: Install python-apt
+    apt:
+      name: $item
+      state: latest
+    with_items:
+      - python-apt
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   - name: setup
     setup:
   - name: Install python-selinux
-    dnf: name=libselinux-python
-    become: yes
-    become_user: root
+    package:
+      name: libselinux-python
   - name: Setup vagrant permissions
     lineinfile: dest=/etc/sudoers.d/vagrant line="vagrant ALL=(ALL) NOPASSWD:ALL" state=present create=yes
     become: yes
