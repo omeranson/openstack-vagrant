@@ -2,11 +2,11 @@
 - hosts: all
   tasks:
   - name: Update system packages
-    dnf: name=* state=latest
+    package: name=* state=latest
     become: yes
     become_user: root
   - name: Install C Development Tools and Libraries
-    dnf: name="@C Development Tools and Libraries"
+    package: name="@C Development Tools and Libraries"
     register: development_installed
     become: yes
     become_user: root
@@ -16,31 +16,31 @@
     #  become: yes
     #  become_user: root
   - name: Install kernel development dependencies
-    dnf: name=kernel-devel
+    package: name=kernel-devel
     register: kernel_devel_installed
     become: yes
     become_user: root
   - name: Install xauth
-    dnf: name=xauth
+    package: name=xauth
     become: yes
     become_user: root
   - name: Install tigervnc
-    dnf: name=tigervnc
+    package: name=tigervnc
     become: yes
     become_user: root
   - name: Install and update libnghttp2
-    dnf: name=libnghttp2
+    package: name=libnghttp2
     become: yes
     become_user: root
   - name: Update vim-minimal
-    dnf: name=vim-minimal state=latest
+    package: name=vim-minimal state=latest
     become: yes
     become_user: root
   - name: Install vim
-    dnf: name=vim
+    package: name=vim
     become: yes
     become_user: root
   - name: Install gpg
-    dnf: name=gpg
+    package: name=gpg
     become: yes
     become_user: root
