@@ -6,20 +6,22 @@
     package:
       name: python
       state: latest
+    become: yes
+    become_user: root
   - name: Install python-dnf
-    dnf:
-      name: $item
+    package:
+      name: python-dnf
       state: latest
-    with_items:
-      - python-dnf
-    when: ansible_distribution == 'Fedora'
+    become: yes
+    become_user: root
+    when: ansible_os_family == "RedHat"
   - name: Install python-apt
-    apt:
-      name: $item
+    package:
+      name: python-apt
       state: latest
-    with_items:
-      - python-apt
-    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    become: yes
+    become_user: root
+    when: ansible_os_family == "Debian"
   - name: setup
     setup:
   - name: Install python-selinux

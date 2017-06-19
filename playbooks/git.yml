@@ -1,15 +1,9 @@
 ---
 - hosts: all
   tasks:
-  - name: Install git (Debian)
-    apt: name=git state=present
+  - name: Install git
+    package: name=git state=present
     when: ansible_os_family == "Debian"
-    register: git_installed
-    become: yes
-    become_user: root
-  - name: Install git (RedHat)
-    dnf: name=git state=present
-    when: ansible_os_family == "RedHat"
     register: git_installed
     become: yes
     become_user: root

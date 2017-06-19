@@ -1,15 +1,8 @@
 ---
 - hosts: all
   tasks:
-  - name: Install tmux (Debian)
-    apt: name=tmux state=present
-    when: ansible_os_family == "Debian"
-    register: tmux_installed
-    become: yes
-    become_user: root
-  - name: Install tmux (RedHat)
-    dnf: name=tmux state=present
-    when: ansible_os_family == "RedHat"
+  - name: Install tmux
+    package: name=tmux state=latest
     register: tmux_installed
     become: yes
     become_user: root
