@@ -2,8 +2,7 @@
 - hosts: all
   tasks:
   - name: Install git
-    package: name=git state=present
-    when: ansible_os_family == "Debian"
+    package: name=git state=latest
     register: git_installed
     become: yes
     become_user: root

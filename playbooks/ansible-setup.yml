@@ -3,7 +3,7 @@
   gather_facts: no
   tasks:
   - name: Install python
-    package:
+    apt:
       name: python
       state: latest
     become: yes

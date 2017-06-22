@@ -2,7 +2,7 @@
 - hosts: all
   tasks:
   - name: Install python-pip
-    package: name=python-pip state=present
+    package: name=python-pip state=latest
     register: pip_installed
     become: yes
     become_user: root
