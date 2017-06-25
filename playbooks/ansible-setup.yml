@@ -2,8 +2,10 @@
 - hosts: all
   gather_facts: no
   tasks:
+  - name: setup
+    setup:
   - name: Install python
-    apt:
+    package:
       name: python
       state: latest
     become: yes
@@ -27,6 +29,17 @@
   - name: Install python-selinux
     package:
       name: libselinux-python
+      state: latest
+    when: ansible_os_family == "RedHat"
+    become: yes
+    become_user: root
+  - name: Install python-selinux
+    package:
+      name: python-selinux
+      state: latest
+    when: ansible_os_family == "Debian"
+    become: yes
+    become_user: root
   - name: Setup vagrant permissions
     lineinfile: dest=/etc/sudoers.d/vagrant line="vagrant ALL=(ALL) NOPASSWD:ALL" state=present create=yes
     become: yes
