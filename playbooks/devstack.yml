@@ -47,7 +47,7 @@
     shell: |
       tmux start-server
       tmux new-session -d -s stack -n stack
-      tmux send-keys -t stack:stack "cd devstack" C-m
+      tmux send-keys -t stack:stack "cd /home/stack/devstack" C-m
       tmux send-keys -t stack:stack "./stack.sh" C-m
     become: yes
     become_user: stack
