@@ -8,6 +8,8 @@ LIBVIRT_SERVER_DEFAULT="localhost"
 VAGRANT_MEMORY_DEFAULT=8192
 VAGRANT_CPUS_DEFAULT=1
 
+STORAGE_POOL_DEFAULT="default"
+
 VAGRANT_BOX=${VAGRANT_BOX:-$VAGRANT_BOX_DEFAULT}
 LIBVIRT_SERVER=${LIBVIRT_SERVER:-$LIBVIRT_SERVER_DEFAULT}
 LOCAL_CONF=${LOCAL_CONF:-"local.conf"}
@@ -15,15 +17,15 @@ VAGRANT_MEMORY=${VAGRANT_MEMORY:-$VAGRANT_MEMORY_DEFAULT}
 VAGRANT_CPUS=${VAGRANT_CPUS:-$VAGRANT_CPUS_DEFAULT}
 INSTALL_SCRIPT=${INSTALL_SCRIPT:-"install.sh"}
 BASE=${BASE:-~/vagrant/instances}
-LVM_VOLUME_GROUP=${LVM_VOLUME_GROUP:-openstack_vg}
-LVM_DISK_SIZE=${LVM_DISK_SIZE:-40G}
+STORAGE_POOL=${STORAGE_POOL:-$STORAGE_POOL_DEFAULT}
+DISK_SIZE=${DISK_SIZE:-""}
 
 function help {
     echo "USAGE: $0 [options]
 Where [option]s may be:
     -b <box type>       The base box to use for the node (default: $VAGRANT_BOX_DEFAULT)
-    -d <disk size>      The maximum allocated disk size (default: 40G)
-    -g <lvm group>      Allocate storage from this LVM volume group (default: openstack_cg)
+    -d <disk size>      The maximum allocated disk size (default: image default)
+    -g <storage pool>   Allocate storage from this libvirt storage pool (default: $STORAGE_POOL_DEFAULT)
     -i <install-script> The install script to use (default: install.sh)
     -l <local.conf>     The name of the local.conf file on which to run stack.sh
     -m <memory>         The amount of allocated memory, in MB (default $VAGRANT_MEMORY_DEFAULT)
@@ -35,8 +37,8 @@ Where [option]s may be:
 while getopts "b:d:g:i:l:m:s:v:h" OPTION ; do
     case $OPTION in
         b ) VAGRANT_BOX=$OPTARG ;;
-        d ) LVM_DISK_SIZE=$OPTARG ;;
-        g ) LVM_VOLUME_GROUP=$OPTARG ;;
+        d ) DISK_SIZE=$OPTARG ;;
+        g ) STORAGE_POOL=$OPTARG ;;
         i ) INSTALL_SCRIPT=$OPTARG ;;
         l ) LOCAL_CONF=$OPTARG ;;
         m ) VAGRANT_MEMORY=$OPTARG ;;
@@ -66,7 +68,16 @@ if [ ! -x "$HOME/vagrant/common/guest_scripts/$INSTALL_SCRIPT" ]; then
 fi
 
 RAND=`mktemp -u XXXXXX`
-LVM_USE_VOLUME=""
+
+STORAGE_POOL_CONFIG=""
+if [[ "$STORAGE_POOL" != "" ]]; then
+    STORAGE_POOL_CONFIG="libvirt.storage_pool_name = \"$STORAGE_POOL\""
+fi
+
+DISK_SIZE_CONFIG=""
+if [[ "$DISK_SIZE" != "" ]]; then
+    DISK_SIZE_CONFIG="libvirt.machine_virtual_size=\"$DISK_SIZE\""
+fi
 #LVM_CREATE_VOLUME_TRIGGER=""
 #LVM_DESTROY_VOLUME_TRIGGER=""
 #if [ "$LIBVIRT_SERVER" != "localhost" ]; then
@@ -167,9 +178,10 @@ Vagrant.configure(2) do |config|
     libvirt.username = username
     libvirt.memory = $VAGRANT_MEMORY
     libvirt.cpus = $VAGRANT_CPUS
-    $LVM_USE_VOLUME
+    $STORAGE_POOL_CONFIG
+    $DISK_SIZE_CONFIG
   end
-  
+
   #
   # View the documentation for the provider you are using for more
   # information on available options.
