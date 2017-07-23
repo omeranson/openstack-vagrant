@@ -2,7 +2,7 @@
 - hosts: all
   tasks:
   - name: Install acl
-    package: name=acl state=present
+    package: name=acl state=latest
     register: acl_installed
     become: yes
     become_user: root

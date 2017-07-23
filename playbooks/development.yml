@@ -1,46 +1,75 @@
 ---
 - hosts: all
   tasks:
-  - name: Update system packages
-    dnf: name=* state=latest
+  - name: Update system packages (RedHat)
+    package: name=* state=latest
     become: yes
     become_user: root
-  - name: Install C Development Tools and Libraries
+    when: ansible_os_family == "RedHat"
+  - name: Update system packages (Debian)
+    apt: upgrade=dist
+    become: yes
+    become_user: root
+    when: ansible_os_family == "Debian"
+  - name: Install C Development Tools and Libraries (RedHat)
     dnf: name="@C Development Tools and Libraries"
     register: development_installed
+    when: ansible_os_family == "RedHat"
     become: yes
     become_user: root
-    #- name: Install latest kernel
-    #  dnf: name=kernel state=latest
-    #  register: kernel_devel_installed
-    #  become: yes
-    #  become_user: root
-  - name: Install kernel development dependencies
-    dnf: name=kernel-devel
+  - name: Install C Development Tools and Libraries (Debian)
+    apt: name=build-essential
+    register: development_installed
+    when: ansible_os_family == "Debian"
+    become: yes
+    become_user: root
+  - name: Install kernel development dependencies (RedHat)
+    package: name=kernel-devel
     register: kernel_devel_installed
     become: yes
     become_user: root
+    when: ansible_os_family == "RedHat"
+  - name: Install kernel development dependencies (Debian)
+    package: name=linux-libc-dev
+    register: kernel_devel_installed
+    become: yes
+    become_user: root
+    when: ansible_os_family == "Debian"
   - name: Install xauth
-    dnf: name=xauth
+    package: name=xauth
     become: yes
     become_user: root
-  - name: Install tigervnc
-    dnf: name=tigervnc
+  - name: Install VNC viewer (RedHat, tigervnc)
+    package: name=tigervnc
     become: yes
     become_user: root
+    when: ansible_os_family == "RedHat"
+  - name: Install VNC viewer (Debian, xvnc4viewer)
+    package: name=xvnc4viewer
+    become: yes
+    become_user: root
+    when: ansible_os_family == "Debian"
   - name: Install and update libnghttp2
-    dnf: name=libnghttp2
+    package: name=libnghttp2
     become: yes
     become_user: root
+    when: ansible_os_family == "RedHat"
   - name: Update vim-minimal
-    dnf: name=vim-minimal state=latest
+    package: name=vim-minimal state=latest
     become: yes
     become_user: root
+    when: ansible_os_family == "RedHat"
   - name: Install vim
-    dnf: name=vim
+    package: name=vim
     become: yes
     become_user: root
-  - name: Install gpg
-    dnf: name=gpg
+  - name: Install gpg (RedHat)
+    package: name=gpg
     become: yes
     become_user: root
+    when: ansible_os_family == "RedHat"
+  - name: Install gpg (Debian)
+    package: name=gpgv
+    become: yes
+    become_user: root
+    when: ansible_os_family == "Debian"

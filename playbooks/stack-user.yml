@@ -2,7 +2,11 @@
 - hosts: all
   tasks:
   - name: Add Stack user
-    user: name=stack append=yes groups=wheel
+    user:
+      name: stack
+      append: yes
+      groups: "{{ 'wheel' if ansible_os_family == 'RedHat' else '' }}"
+      shell: "/bin/bash"
     become: yes
     become_user: root
   - name: Add Stack to Sudoers

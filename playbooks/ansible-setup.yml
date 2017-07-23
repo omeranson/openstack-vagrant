@@ -6,10 +6,35 @@
     raw: dnf install -y python python-dnf
     become: yes
     become_user: root
+    ignore_errors: yes
   - name: setup
     setup:
+  - name: Install python
+    package:
+      name: python
+      state: latest
+    become: yes
+    become_user: root
+    when: ansible_os_family == "Debian"
+  - name: Install python-apt
+    package:
+      name: python-apt
+      state: latest
+    become: yes
+    become_user: root
+    when: ansible_os_family == "Debian"
   - name: Install python-selinux
-    dnf: name=libselinux-python
+    package:
+      name: libselinux-python
+      state: latest
+    when: ansible_os_family == "RedHat"
+    become: yes
+    become_user: root
+  - name: Install python-selinux
+    package:
+      name: python-selinux
+      state: latest
+    when: ansible_os_family == "Debian"
     become: yes
     become_user: root
   - name: Setup vagrant permissions

@@ -1,14 +1,8 @@
 ---
 - hosts: all
   tasks:
-    # - name: Install python-pip (Debian)
-    #   apt: name=python-pip state=present
-    #   when: ansible_os_family == "Debian"
-    #   register: pip_installed
-    #   become: yes
-    #   become_user: root
-  - name: Install python-pip (RedHat)
-    dnf: name=python-pip state=present
+  - name: Install python-pip
+    package: name=python-pip state=latest
     register: pip_installed
     become: yes
     become_user: root
