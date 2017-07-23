@@ -11,10 +11,6 @@
     become: yes
     become_user: root
     when: ansible_os_family == "Debian"
-  - name: Update system packages
-    apt: upgrade=dist
-    become: yes
-    become_user: root
   - name: Install C Development Tools and Libraries (RedHat)
     dnf: name="@C Development Tools and Libraries"
     register: development_installed
