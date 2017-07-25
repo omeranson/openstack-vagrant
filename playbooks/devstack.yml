@@ -18,9 +18,9 @@
     - devstack-only
   - name: Clone projects
     git:
-      dest="/opt/stack/{{ item.name }}"
-      repo="{{ item.repo | d("git://github.com/openstack/" + item.name, True) }}"
-      version="{{ item.version | d("HEAD", True) }}"
+      dest: "/opt/stack/{{ item.name }}"
+      repo: "{{ item.repo | d('git://github.com/openstack/' + item.name, True) }}"
+      version: "{{ item.version | d('HEAD', True) }}"
     become: yes
     become_user: stack
     with_items: "{{ projects | d([], True) }}"
