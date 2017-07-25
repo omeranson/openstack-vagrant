@@ -5,7 +5,7 @@ machines:
       username: root
     memory: 8192
     vcpus: 1
-    box: "fedora/24-cloud-base"
+    box: "fedora/25-cloud-base"
     local_conf_file: ../common/local.confs/local.conf.standalone.zmq.df_l3_agent.ml2
     projects:
     - name: dragonflow
@@ -13,7 +13,7 @@ machines:
       - 405576
   - name: xenial
     hypervisor:
-      name: mystique
+      name: localhost
       username: root
     memory: 8192
     vcpus: 1
