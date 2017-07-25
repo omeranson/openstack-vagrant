@@ -2,6 +2,11 @@
 - hosts: all
   gather_facts: no
   tasks:
+  - name: Install dependencies
+    raw: dnf install -y python python-dnf
+    become: yes
+    become_user: root
+    ignore_errors: yes
   - name: setup
     setup:
   - name: Install python
@@ -10,13 +15,7 @@
       state: latest
     become: yes
     become_user: root
-  - name: Install python-dnf
-    package:
-      name: python-dnf
-      state: latest
-    become: yes
-    become_user: root
-    when: ansible_os_family == "RedHat"
+    when: ansible_os_family == "Debian"
   - name: Install python-apt
     package:
       name: python-apt
@@ -24,8 +23,6 @@
     become: yes
     become_user: root
     when: ansible_os_family == "Debian"
-  - name: setup
-    setup:
   - name: Install python-selinux
     package:
       name: libselinux-python
