@@ -1,7 +1,7 @@
 machines:
   - name: one
     hypervisor:
-      name: mystique
+      name: localhost
       username: root
     memory: 8192
     vcpus: 1
@@ -13,7 +13,7 @@ machines:
       - 405576
   - name: xenial
     hypervisor:
-      name: mystique
+      name: localhost
       username: root
     memory: 8192
     vcpus: 1
