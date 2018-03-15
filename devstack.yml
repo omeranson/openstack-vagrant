@@ -1,11 +1,11 @@
 - hosts: all
   gather_facts: no
-- include: playbooks/ansible-setup.yml
-- include: playbooks/development.yml
-- include: playbooks/acl.yml
-- include: playbooks/git.yml
-- include: playbooks/python-devel.yml
-- include: playbooks/tmux.yml
-- include: playbooks/stack-user.yml
-- include: playbooks/reboot.yml
-- include: playbooks/devstack.yml
+- import_playbook: playbooks/ansible-setup.yml
+- import_playbook: playbooks/development.yml
+- import_playbook: playbooks/acl.yml
+- import_playbook: playbooks/git.yml
+- import_playbook: playbooks/python-devel.yml
+- import_playbook: playbooks/tmux.yml
+- import_playbook: playbooks/stack-user.yml
+- import_playbook: playbooks/reboot.yml
+- import_playbook: playbooks/devstack.yml
